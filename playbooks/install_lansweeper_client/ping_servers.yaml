@@ -1,0 +1,8 @@
+---
+- name: Ping Windows servers
+  hosts: all
+  vars:
+
+  tasks:
+  - name: Ping servers
+    ansible.windows.win_ping:

@@ -1,0 +1,11 @@
+---
+- name: Manage Linux admin users (SSH keys + sudo with password)
+  hosts: linux
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - vars/admins.yml
+
+  roles:
+    - linux_admins

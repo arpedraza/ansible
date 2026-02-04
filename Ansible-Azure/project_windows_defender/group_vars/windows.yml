@@ -1,0 +1,22 @@
+# Use WinRM to connect to Windows
+ansible_connection: winrm
+
+# Kerberos auth (no password in files; kinit provides the ticket)
+ansible_winrm_transport: kerberos
+
+# WinRM endpoint
+ansible_winrm_scheme: http
+ansible_winrm_port: 5985
+
+# If you use HTTPS (5986), change scheme/port and set validation accordingly
+ansible_winrm_server_cert_validation: ignore
+
+# Domain user. Use UPN format for Kerberos.
+ansible_user: svc_ansible@USER.EUROPORTS.COM
+
+# WinRM operation timeouts (optional but helpful)
+ansible_winrm_operation_timeout_sec: 60
+ansible_winrm_read_timeout_sec: 90
+
+# Hostname override for Kerberos
+ansible_winrm_kerberos_hostname_override: "{{ inventory_hostname }}"

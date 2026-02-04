@@ -1,0 +1,139 @@
+---
+# ── SETUP & DIRECTORIES ──────────────────────────────────────────────────────
+- name: Ensure per_host reports directory exists on control node
+  delegate_to: localhost
+  become: false           # <--- IMPORTANT: do NOT sudo on localhost
+  run_once: true
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/reports/per_host"
+    state: directory
+    mode: '0755'
+
+- name: Set report timestamp for this host
+  ansible.builtin.set_fact:
+    report_timestamp: >-
+      {{ ansible_date_time.day }}-{{ ansible_date_time.month }}-{{ ansible_date_time.year }}_{{ ansible_date_time.hour }}.{{ ansible_date_time.minute }}
+
+# ── COLLECT USERS & GROUPS ───────────────────────────────────────────────────
+- name: Get passwd database
+  ansible.builtin.getent:
+    database: passwd
+  register: passwd_db
+
+- name: Get group database
+  ansible.builtin.getent:
+    database: group
+  register: group_db
+
+# ── SUDOERS PARSING ──────────────────────────────────────────────────────────
+- name: Read /etc/sudoers (if present)
+  ansible.builtin.slurp:
+    path: /etc/sudoers
+  register: sudoers_main
+  ignore_errors: yes
+
+- name: Read files from /etc/sudoers.d (if directory exists)
+  ansible.builtin.shell: |
+    if [ -d /etc/sudoers.d ]; then
+      cat /etc/sudoers.d/* 2>/dev/null || true
+    fi
+  register: sudoers_d
+  changed_when: false
+
+- name: Build combined sudoers text
+  ansible.builtin.set_fact:
+    sudoers_text: >-
+      {{ (sudoers_main.content | default('') | b64decode | string)
+         + '\n'
+         + (sudoers_d.stdout | default('')) }}
+
+- name: Find privileged groups from sudoers (%group ALL=(ALL) ...)
+  ansible.builtin.set_fact:
+    sudo_groups_from_sudoers: >-
+      {{ sudoers_text
+         | regex_findall('^\\s*%([\\w-]+)\\s+ALL=\\(ALL\\).*', multiline=True)
+         | unique }}
+
+- name: Find explicitly sudo-enabled users from sudoers (user ALL=(ALL) ...)
+  ansible.builtin.set_fact:
+    sudo_users_from_sudoers: >-
+      {{ sudoers_text
+         | regex_findall('^\\s*([\\w-]+)\\s+ALL=\\(ALL\\).*', multiline=True)
+         | unique }}
+
+- name: Add OS-specific default sudo groups
+  ansible.builtin.set_fact:
+    default_sudo_groups: >-
+      {{ ['wheel', 'sudo', 'admin'] }}
+
+- name: Find groups with GID 0 (root-equivalent)
+  ansible.builtin.set_fact:
+    gid0_groups: >-
+      {{ group_db.ansible_facts.getent_group | dict2items
+         | selectattr('value.1', 'equalto', '0')
+         | map(attribute='key') | list }}
+
+- name: Build final sudo-capable groups list
+  ansible.builtin.set_fact:
+    sudo_groups: >-
+      {{ (sudo_groups_from_sudoers
+          + default_sudo_groups
+          + gid0_groups
+          + additional_sudo_groups) | unique }}
+
+# ── BUILD USER STRUCTURE ─────────────────────────────────────────────────────
+- name: Build user -> info (uid, home, shell, groups)
+  ansible.builtin.set_fact:
+    users_info: >-
+      {{ users_info | default({}) | combine({
+        item.key: {
+          'uid': item.value[1],
+          'gid': item.value[2],
+          'gecos': item.value[3],
+          'home': item.value[4],
+          'shell': item.value[5],
+          'groups': (
+              group_db.ansible_facts.getent_group
+              | dict2items
+              | selectattr('value.2', 'contains', item.key)
+              | map(attribute='key')
+              | list
+            )
+        }
+      }) }}
+  loop: "{{ passwd_db.ansible_facts.getent_passwd | dict2items }}"
+
+- name: Mark which users are sudoers (via groups or explicit sudoers entry)
+  ansible.builtin.set_fact:
+    users_with_rights: >-
+      {{ users_with_rights | default({}) | combine({
+        item.key: item.value | combine({
+          'is_sudoer': (
+            (item.value.groups | intersect(sudo_groups) | length > 0)
+            or (item.key in (sudo_users_from_sudoers | default([])))
+          )
+        })
+      }) }}
+  loop: "{{ users_info | dict2items }}"
+
+# ── BUILD HOST REPORT ────────────────────────────────────────────────────────
+- name: Build host-level user/group report structure
+  ansible.builtin.set_fact:
+    host_user_group_report:
+      host: "{{ inventory_hostname }}"
+      os_family: "{{ ansible_facts.os_family }}"
+      distribution: "{{ ansible_facts.distribution }}"
+      distribution_version: "{{ ansible_facts.distribution_version }}"
+      sudo_groups: "{{ sudo_groups }}"
+      sudo_users_from_sudoers: "{{ sudo_users_from_sudoers | default([]) }}"
+      timestamp: "{{ report_timestamp }}"
+      users: "{{ users_with_rights }}"
+
+# ── SAVE PER-HOST JSON ON CONTROLLER ────────────────────────────────────────
+- name: Save per-host JSON report to control node
+  delegate_to: localhost
+  become: false        # <--- CRITICAL: do not sudo on localhost
+  ansible.builtin.copy:
+    dest: >-
+      {{ playbook_dir }}/reports/per_host/{{ inventory_hostname }}-users-and-groups-{{ report_timestamp }}.json
+    content: "{{ host_user_group_report | to_nice_json }}"

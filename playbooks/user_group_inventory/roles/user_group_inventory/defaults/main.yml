@@ -1,0 +1,4 @@
+---
+# Extra groups that should always be treated as sudo-capable
+# Override in group_vars/host_vars if needed
+additional_sudo_groups: []

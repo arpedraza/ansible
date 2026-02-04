@@ -1,0 +1,44 @@
+- name: TLS Root Trust Probe (self-report)
+  hosts: all
+  gather_facts: false
+
+  vars:
+    test_host: certcheck.sentinelone.net
+    test_port: 443
+
+  tasks:
+
+    - name: Run TLS trust probe
+      raw: |
+        if command -v openssl >/dev/null 2>&1; then
+          if openssl s_client -help 2>&1 | grep -q -- "-brief"; then
+            echo | timeout 15 openssl s_client -connect {{ test_host }}:{{ test_port }} -servername {{ test_host }} -verify_return_error -brief 2>&1
+          else
+            echo | timeout 15 openssl s_client -connect {{ test_host }}:{{ test_port }} -servername {{ test_host }} -verify_return_error 2>&1
+          fi
+        else
+          echo "NO_OPENSSL"
+        fi
+      register: tls_probe
+      failed_when: false
+      changed_when: false
+
+    - name: Classify state
+      set_fact:
+        tls_state: >-
+          {% if 'Verify return code: 0 (ok)' in (tls_probe.stdout | default('')) %}
+          Trusted
+          {% elif 'CONNECTION ESTABLISHED' in (tls_probe.stdout | default('')) %}
+          Trusted
+          {% elif 'NO_OPENSSL' in (tls_probe.stdout | default('')) %}
+          NoOpenSSL
+          {% else %}
+          Untrusted
+          {% endif %}
+
+    - name: Write local state file
+      delegate_to: localhost
+      copy:
+        dest: "/tmp/tls_{{ inventory_hostname }}.state"
+        content: "{{ tls_state }}"
+

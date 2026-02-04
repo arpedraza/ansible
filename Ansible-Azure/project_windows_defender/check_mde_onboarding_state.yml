@@ -1,0 +1,47 @@
+---
+- name: Check Microsoft Defender for Endpoint onboarding state
+  hosts: windows
+  gather_facts: no
+  any_errors_fatal: false
+
+  vars:
+    mde_registry_path: HKLM:\SOFTWARE\Microsoft\Windows Advanced Threat Protection
+    mde_registry_value: OnboardingState
+
+  tasks:
+    - name: Check MDE onboarding registry key
+      ansible.windows.win_reg_stat:
+        path: "{{ mde_registry_path }}"
+        name: "{{ mde_registry_value }}"
+      register: mde_reg
+      failed_when: false
+
+    - name: Check Sense service (MDE service)
+      ansible.windows.win_service_info:
+        name: Sense
+      register: mde_sense
+      failed_when: false
+
+    - name: Determine MDE onboarding state
+      set_fact:
+        mde_onboarded: >-
+          {{
+            (mde_reg.exists | default(false))
+            and
+            (mde_reg.value | default(0) | int == 1)
+            and
+            (mde_sense.services | default([]) | length > 0)
+          }}
+
+    - name: Add host to MDE onboarded / offboarded group
+      group_by:
+        key: "mde_{{ 'onboarded' if mde_onboarded else 'offboarded' }}"
+
+    - name: Show MDE status (per host)
+      debug:
+        msg:
+          hostname: "{{ inventory_hostname }}"
+          mde_onboarded: "{{ mde_onboarded }}"
+          registry_value: "{{ mde_reg.value | default('missing') }}"
+          sense_service_present: "{{ mde_sense.services | default([]) | length > 0 }}"
+

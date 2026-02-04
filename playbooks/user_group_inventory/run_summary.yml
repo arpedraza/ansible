@@ -1,0 +1,58 @@
+---
+- name: Generate run summary report
+  hosts: localhost
+  gather_facts: false
+  become: false
+
+  vars:
+    # Folder for summary CSV
+    excel_dir: "{{ playbook_dir }}/reports/excel"
+    timestamp: "{{ lookup('pipe', 'date +%d-%m-%Y_%H.%M') }}"
+    csv_path: "{{ excel_dir }}/run_summary-{{ timestamp }}.csv"
+
+  tasks:
+    - name: Ensure excel reports directory exists
+      ansible.builtin.file:
+        path: "{{ excel_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Build summary records for all hosts
+      ansible.builtin.set_fact:
+        run_summary: >-
+          {{
+            (
+              groups['linux'] | map('extract', hostvars) | list
+            )
+            | map('combine', {
+                'host': item.inventory_hostname,
+                'status':
+                   ( 'success' if (item.ansible_facts is defined)
+                     else 'failed' if (item.failed is defined and item.failed)
+                     else 'unreachable' if (item.unreachable is defined and item.unreachable)
+                     else 'unknown'),
+                'error':
+                   ( item.msg | default('') )
+              })
+            | list
+          }}
+      loop: "{{ groups['linux'] }}"
+      loop_control:
+        loop_var: item
+
+    - name: Build CSV lines
+      ansible.builtin.set_fact:
+        csv_lines: >-
+          {{
+            ['host,status,error']
+            +
+            (run_summary |
+              map('json_query', '[host, status, error]') |
+              map('join', ',') |
+              list)
+          }}
+
+    - name: Write summary CSV
+      ansible.builtin.copy:
+        dest: "{{ csv_path }}"
+        content: "{{ csv_lines | join('\n') }}"
