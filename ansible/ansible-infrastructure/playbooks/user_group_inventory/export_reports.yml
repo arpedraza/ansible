@@ -1,0 +1,54 @@
+---
+- name: Aggregate Linux user/group reports
+  hosts: localhost
+  gather_facts: false
+  become: false
+
+  vars:
+    per_host_dir: "{{ playbook_dir }}/reports/per_host"
+    consolidated_dir: "{{ playbook_dir }}/reports/consolidated"
+    excel_dir: "{{ playbook_dir }}/reports/excel"
+    run_timestamp: "{{ lookup('pipe', 'date +%d-%m-%Y_%H.%M') }}"
+    consolidated_json_path: "{{ consolidated_dir }}/all_hosts-{{ run_timestamp }}.json"
+    csv_path: "{{ excel_dir }}/linux_user_group_inventory-{{ run_timestamp }}.csv"
+
+  tasks:
+    - name: Ensure consolidated reports directory exists
+      ansible.builtin.file:
+        path: "{{ consolidated_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure excel reports directory exists
+      ansible.builtin.file:
+        path: "{{ excel_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Find per-host JSON report files
+      ansible.builtin.find:
+        paths: "{{ per_host_dir }}"
+        patterns: "*-users-and-groups-*.json"
+      register: report_files
+
+    - name: Load per-host JSON files
+      ansible.builtin.set_fact:
+        reports: "{{ (reports | default([])) + [ lookup('file', item.path) | from_json ] }}"
+      loop: "{{ report_files.files }}"
+      when: report_files.matched | default(0) | int > 0
+
+    - name: Write consolidated JSON file
+      ansible.builtin.copy:
+        dest: "{{ consolidated_json_path }}"
+        content: "{{ (reports | default([])) | to_nice_json }}"
+
+    - name: Render CSV from reports
+      ansible.builtin.copy:
+        dest: "{{ csv_path }}"
+        content: |
+          host,user,uid,groups,is_sudoer
+          {% for report in reports | default([]) %}
+          {% for username, u in report.users.items() %}
+          {{ report.host }},{{ username }},{{ u.uid }},{{ (u.groups | join(';')) }},{{ u.is_sudoer }}
+          {% endfor %}
+          {% endfor %}

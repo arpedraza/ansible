@@ -1,0 +1,16 @@
+---
+- name: Cleanup LanSweeper user
+  hosts: all
+
+  tasks:
+  - name: Remove LanSweeper user
+    ansible.builtin.user:
+      name: lansweeper
+      state: absent
+      remove: yes
+
+  - name: Remove Ansible user
+    ansible.builtin.user:
+      name: ansible
+      state: absent
+      remove: yes

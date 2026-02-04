@@ -1,0 +1,740 @@
+{
+    "distribution": "Ubuntu",
+    "distribution_version": "20.04",
+    "host": "ipostwe-docker01",
+    "os_family": "Debian",
+    "sudo_groups": [
+        "wheel",
+        "sudo",
+        "admin",
+        "root"
+    ],
+    "sudo_users_from_sudoers": [],
+    "timestamp": "30-01-2026_13.32",
+    "users": {
+        "_apt": {
+            "gecos": "",
+            "gid": "65534",
+            "groups": [],
+            "home": "/nonexistent",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "105"
+        },
+        "_chrony": {
+            "gecos": "Chrony daemon,,,",
+            "gid": "120",
+            "groups": [],
+            "home": "/var/lib/chrony",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "112"
+        },
+        "adm_andy": {
+            "gecos": "Andy Pedraza",
+            "gid": "7001",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/adm_andy",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "7001"
+        },
+        "ankita": {
+            "gecos": "",
+            "gid": "1013",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/ankita",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1013"
+        },
+        "ansible": {
+            "gecos": "",
+            "gid": "1026",
+            "groups": [
+                "sudo"
+            ],
+            "home": "/home/ansible",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1026"
+        },
+        "axi.a_kwlm": {
+            "gecos": "Kris Welleman",
+            "gid": "2002",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/axi.a_kwlm",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "2002"
+        },
+        "axi.a_mley": {
+            "gecos": "Marcus Leys",
+            "gid": "2001",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/axi.a_mley",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "2001"
+        },
+        "backup": {
+            "gecos": "backup",
+            "gid": "34",
+            "groups": [],
+            "home": "/var/backups",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "34"
+        },
+        "bin": {
+            "gecos": "bin",
+            "gid": "2",
+            "groups": [],
+            "home": "/bin",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "2"
+        },
+        "chetan": {
+            "gecos": "Chetan,,,",
+            "gid": "1024",
+            "groups": [
+                "docker"
+            ],
+            "home": "/home/chetan",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1024"
+        },
+        "daemon": {
+            "gecos": "daemon",
+            "gid": "1",
+            "groups": [],
+            "home": "/usr/sbin",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "1"
+        },
+        "epinfra": {
+            "gecos": "Ubuntu",
+            "gid": "1000",
+            "groups": [
+                "adm",
+                "dialout",
+                "cdrom",
+                "floppy",
+                "sudo",
+                "audio",
+                "dip",
+                "video",
+                "plugdev",
+                "netdev",
+                "lxd",
+                "docker"
+            ],
+            "home": "/home/epinfra",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1000"
+        },
+        "games": {
+            "gecos": "games",
+            "gid": "60",
+            "groups": [],
+            "home": "/usr/games",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "5"
+        },
+        "gnats": {
+            "gecos": "Gnats Bug-Reporting System (admin)",
+            "gid": "41",
+            "groups": [],
+            "home": "/var/lib/gnats",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "41"
+        },
+        "govardhan": {
+            "gecos": "",
+            "gid": "1019",
+            "groups": [
+                "docker"
+            ],
+            "home": "/home/govardhan",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1019"
+        },
+        "harshita": {
+            "gecos": "",
+            "gid": "1017",
+            "groups": [
+                "docker"
+            ],
+            "home": "/home/harshita",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1017"
+        },
+        "irc": {
+            "gecos": "ircd",
+            "gid": "39",
+            "groups": [],
+            "home": "/var/run/ircd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "39"
+        },
+        "ithekhar": {
+            "gecos": "",
+            "gid": "1004",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/ithekhar",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1004"
+        },
+        "krishna": {
+            "gecos": "",
+            "gid": "1012",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/krishna",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1012"
+        },
+        "landscape": {
+            "gecos": "",
+            "gid": "115",
+            "groups": [],
+            "home": "/var/lib/landscape",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "110"
+        },
+        "lansweeper": {
+            "gecos": "",
+            "gid": "1025",
+            "groups": [
+                "sudo"
+            ],
+            "home": "/home/lansweeper",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1025"
+        },
+        "list": {
+            "gecos": "Mailing List Manager",
+            "gid": "38",
+            "groups": [],
+            "home": "/var/list",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "38"
+        },
+        "lokesh": {
+            "gecos": "",
+            "gid": "1011",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/lokesh",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1011"
+        },
+        "lp": {
+            "gecos": "lp",
+            "gid": "7",
+            "groups": [],
+            "home": "/var/spool/lpd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "7"
+        },
+        "lxd": {
+            "gecos": "",
+            "gid": "100",
+            "groups": [],
+            "home": "/var/snap/lxd/common/lxd",
+            "is_sudoer": false,
+            "shell": "/bin/false",
+            "uid": "998"
+        },
+        "mail": {
+            "gecos": "mail",
+            "gid": "8",
+            "groups": [],
+            "home": "/var/mail",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "8"
+        },
+        "man": {
+            "gecos": "man",
+            "gid": "12",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/var/cache/man",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "6"
+        },
+        "manikanta": {
+            "gecos": "",
+            "gid": "1007",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/manikanta",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1007"
+        },
+        "messagebus": {
+            "gecos": "",
+            "gid": "106",
+            "groups": [],
+            "home": "/nonexistent",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "103"
+        },
+        "news": {
+            "gecos": "news",
+            "gid": "9",
+            "groups": [],
+            "home": "/var/spool/news",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "9"
+        },
+        "nobody": {
+            "gecos": "nobody",
+            "gid": "65534",
+            "groups": [],
+            "home": "/nonexistent",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "65534"
+        },
+        "nxautomation": {
+            "gecos": "nxOMSAutomation",
+            "gid": "995",
+            "groups": [
+                "omiusers",
+                "omsagent"
+            ],
+            "home": "/home/nxautomation/run",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "995"
+        },
+        "omi": {
+            "gecos": "",
+            "gid": "997",
+            "groups": [],
+            "home": "/home/omi",
+            "is_sudoer": false,
+            "shell": "/bin/false",
+            "uid": "997"
+        },
+        "omsagent": {
+            "gecos": "OMS agent",
+            "gid": "998",
+            "groups": [],
+            "home": "/var/opt/microsoft/omsagent/run",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "996"
+        },
+        "pavan": {
+            "gecos": "",
+            "gid": "1006",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/pavan",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1006"
+        },
+        "pollinate": {
+            "gecos": "",
+            "gid": "1",
+            "groups": [],
+            "home": "/var/cache/pollinate",
+            "is_sudoer": false,
+            "shell": "/bin/false",
+            "uid": "111"
+        },
+        "praneet": {
+            "gecos": "",
+            "gid": "1003",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/praneet",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1003"
+        },
+        "proxy": {
+            "gecos": "proxy",
+            "gid": "13",
+            "groups": [],
+            "home": "/bin",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "13"
+        },
+        "raju": {
+            "gecos": "",
+            "gid": "1009",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/raju",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1009"
+        },
+        "ravi": {
+            "gecos": "",
+            "gid": "1010",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/ravi",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1010"
+        },
+        "rcheekatla": {
+            "gecos": "",
+            "gid": "1028",
+            "groups": [
+                "sudo",
+                "docker"
+            ],
+            "home": "/home/rcheekatla",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1027"
+        },
+        "revathi": {
+            "gecos": "",
+            "gid": "1014",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/revathi",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1014"
+        },
+        "root": {
+            "gecos": "root",
+            "gid": "0",
+            "groups": [],
+            "home": "/root",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "0"
+        },
+        "sahithi": {
+            "gecos": "",
+            "gid": "1020",
+            "groups": [],
+            "home": "/home/sahithi",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1020"
+        },
+        "satyanarayana": {
+            "gecos": "",
+            "gid": "1016",
+            "groups": [
+                "adm",
+                "sudo",
+                "docker"
+            ],
+            "home": "/home/satyanarayana",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1016"
+        },
+        "sentinelone": {
+            "gecos": "",
+            "gid": "1027",
+            "groups": [],
+            "home": "/opt/sentinelone/home",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "993"
+        },
+        "shabana": {
+            "gecos": "",
+            "gid": "1023",
+            "groups": [
+                "sudo",
+                "docker"
+            ],
+            "home": "/home/shabana",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1023"
+        },
+        "shahbaz": {
+            "gecos": "",
+            "gid": "1002",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/shahbaz",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1002"
+        },
+        "skathuroju": {
+            "gecos": "",
+            "gid": "1029",
+            "groups": [
+                "sudo",
+                "docker"
+            ],
+            "home": "/home/skathuroju",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1028"
+        },
+        "sreekar": {
+            "gecos": "",
+            "gid": "1015",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/sreekar",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1015"
+        },
+        "srilakshmi": {
+            "gecos": "",
+            "gid": "1018",
+            "groups": [
+                "docker"
+            ],
+            "home": "/home/srilakshmi",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1018"
+        },
+        "sshd": {
+            "gecos": "",
+            "gid": "65534",
+            "groups": [],
+            "home": "/run/sshd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "109"
+        },
+        "sukant": {
+            "gecos": "",
+            "gid": "1005",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/sukant",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1005"
+        },
+        "swiagent": {
+            "gecos": "",
+            "gid": "993",
+            "groups": [],
+            "home": "/opt/SolarWinds/Agent",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "994"
+        },
+        "sync": {
+            "gecos": "sync",
+            "gid": "65534",
+            "groups": [],
+            "home": "/bin",
+            "is_sudoer": false,
+            "shell": "/bin/sync",
+            "uid": "4"
+        },
+        "sys": {
+            "gecos": "sys",
+            "gid": "3",
+            "groups": [
+                "adm",
+                "tty"
+            ],
+            "home": "/dev",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "3"
+        },
+        "syslog": {
+            "gecos": "",
+            "gid": "110",
+            "groups": [
+                "adm",
+                "tty"
+            ],
+            "home": "/home/syslog",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "104"
+        },
+        "systemd-coredump": {
+            "gecos": "systemd Core Dumper",
+            "gid": "999",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "999"
+        },
+        "systemd-network": {
+            "gecos": "systemd Network Management,,,",
+            "gid": "102",
+            "groups": [],
+            "home": "/run/systemd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "100"
+        },
+        "systemd-resolve": {
+            "gecos": "systemd Resolver,,,",
+            "gid": "103",
+            "groups": [],
+            "home": "/run/systemd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "101"
+        },
+        "systemd-timesync": {
+            "gecos": "systemd Time Synchronization,,,",
+            "gid": "104",
+            "groups": [],
+            "home": "/run/systemd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "102"
+        },
+        "tcpdump": {
+            "gecos": "",
+            "gid": "113",
+            "groups": [],
+            "home": "/nonexistent",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "108"
+        },
+        "tss": {
+            "gecos": "TPM software stack,,,",
+            "gid": "111",
+            "groups": [],
+            "home": "/var/lib/tpm",
+            "is_sudoer": false,
+            "shell": "/bin/false",
+            "uid": "106"
+        },
+        "ujjwal": {
+            "gecos": "",
+            "gid": "1001",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/ujjwal",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1001"
+        },
+        "uucp": {
+            "gecos": "uucp",
+            "gid": "10",
+            "groups": [],
+            "home": "/var/spool/uucp",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "10"
+        },
+        "uuidd": {
+            "gecos": "",
+            "gid": "112",
+            "groups": [],
+            "home": "/run/uuidd",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "107"
+        },
+        "venkat": {
+            "gecos": "",
+            "gid": "1008",
+            "groups": [
+                "adm",
+                "docker"
+            ],
+            "home": "/home/venkat",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1008"
+        },
+        "www-data": {
+            "gecos": "www-data",
+            "gid": "33",
+            "groups": [],
+            "home": "/var/www",
+            "is_sudoer": false,
+            "shell": "/usr/sbin/nologin",
+            "uid": "33"
+        },
+        "yugandhar": {
+            "gecos": "Yugandhar,,,",
+            "gid": "1021",
+            "groups": [
+                "docker"
+            ],
+            "home": "/home/yugandhar",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1021"
+        }
+    }
+}

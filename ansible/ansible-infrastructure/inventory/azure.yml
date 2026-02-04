@@ -1,0 +1,85 @@
+# Azure Dynamic Inventory Configuration
+# Documentation: https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html
+
+plugin: azure.azcollection.azure_rm
+
+# Authentication
+auth_source: auto  # Uses Azure CLI credentials (az login)
+
+# Subscription filtering (optional - remove to use all subscriptions)
+# include_vm_resource_groups:
+#   - 'production-*'
+#   - 'staging-*'
+
+# Exclude specific resource groups (optional)
+# exclude_vm_resource_groups:
+#   - 'test-*'
+
+# Only include running VMs
+exclude_host_filters:
+  - powerstate != 'running'
+
+# Create groups based on Azure tags
+keyed_groups:
+  # Group by OS type: linux, windows
+  - prefix: os
+    key: tags.os_type | default('unknown')
+  
+  # Group by environment: production, staging, development
+  - prefix: env
+    key: tags.environment | default('untagged')
+  
+  # Group by application/service
+  - prefix: app
+    key: tags.application | default('untagged')
+  
+  # Group by Azure location
+  - prefix: azure_location
+    key: location
+  
+  # Group by resource group
+  - prefix: rg
+    key: resource_group
+
+# Conditional groups (always created)
+conditional_groups:
+  # All hosts
+  all_azure_vms: true
+  
+  # Linux hosts (based on OS)
+  linux: tags.os_type is defined and tags.os_type == 'linux'
+  
+  # Windows hosts
+  windows: tags.os_type is defined and tags.os_type == 'windows'
+  
+  # Production hosts
+  production: tags.environment is defined and tags.environment == 'production'
+  
+  # Non-production hosts
+  non_production: tags.environment is defined and tags.environment != 'production'
+
+# Set host variables using Jinja2 expressions
+hostvar_expressions:
+  # Use private IP as ansible_host (for internal network access)
+  ansible_host: private_ipv4_addresses[0] | default(public_ipv4_addresses[0])
+  
+  # Set connection type based on OS
+  ansible_connection: "'winrm' if tags.os_type == 'windows' else 'ssh'"
+  
+  # Set Python interpreter for Linux
+  ansible_python_interpreter: "'/usr/bin/python3' if tags.os_type == 'linux' else None"
+
+# Compose additional host variables
+compose:
+  # Friendly name
+  vm_name: name
+  
+  # Azure metadata
+  azure_resource_group: resource_group
+  azure_location: location
+  azure_vm_size: vm_size
+  
+  # Tags as individual variables
+  environment: tags.environment | default('untagged')
+  application: tags.application | default('untagged')
+  os_type: tags.os_type | default('unknown')

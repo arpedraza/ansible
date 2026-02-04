@@ -1,0 +1,41 @@
+---
+- name: Create technical users
+  hosts: all
+  vars:
+
+  tasks:
+  - name: Get existing groups
+    getent:
+      database: group
+
+  - name: Create LanSweeper user
+    ansible.builtin.user:
+      name: lansweeper
+      create_home: yes
+      append: yes
+      groups: "{{ ['wheel', 'sudo'] | intersect(ansible_facts['getent_group'] | list) }}"
+      password: "{{ local_lansweeper_password | password_hash('sha512') }}"
+    become: true
+
+  - name: Set authorized key for LanSweeper user
+    ansible.posix.authorized_key:
+      user: lansweeper
+      state: present
+      key: "{{ lookup('file', 'lansweeper.pub') }}"
+    become: true
+
+  - name: Create Ansible user
+    ansible.builtin.user:
+      name: ansible
+      create_home: yes
+      append: yes
+      groups: "{{ ['wheel', 'sudo'] | intersect(ansible_facts['getent_group'] | list) }}"
+      password: "{{ local_ansible_password | password_hash('sha512') }}"
+    become: true
+
+  - name: Set authorized key for Ansible user
+    ansible.posix.authorized_key:
+      user: ansible
+      state: present
+      key: "{{ lookup('file', 'ansible.pub') }}"
+    become: true

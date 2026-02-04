@@ -1,0 +1,66 @@
+---
+# Shared admin group used across all distros (portable)
+linux_admin_group: "admin"
+
+# Optional SSH hardening (OFF by default; enable after canary success)
+harden_sshd_disable_password_login: false
+
+# Where to store archives on target servers
+offboard_archive_path: "/var/archives/offboard"
+
+# Default nologin shell for locked users
+linux_nologin_shell: "/sbin/nologin"
+
+# Define your admins here (source of truth)
+# - Paste public keys received from users into ssh_public_keys
+# - Set a temporary password (plaintext) per user and distribute securely
+#   Users will be forced to change it on first login (chage -d 0)
+# State meaning:
+#   present  : user enabled, in admin group, keys present
+#   revoked  : user cannot login (no keys, locked password, expired, nologin), removed from admin group
+#   offboard : revoked + archive & remove live home dir (home moved under offboard_archive_path)
+#   decom    : revoked + archive home if needed + delete user account (archive kept)
+
+linux_admins:
+
+# EUROPORTS INFRA ADMINS
+  - username: "adm_andy"
+    full_name: "Andy Pedraza"
+    uid: 7001
+    state: present
+    ssh_public_keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILzny147r7VUQrGiC8zNKvEDmCMj8ZXu6448aMSf8tyu"
+    temp_password_plain: "Vwu8Q~Uc91kD7PFjh2~eBGqkSYtaeQK3iO6HrakC"
+
+# AXI ADMINS
+  - username: "axi.a_mley"
+    full_name: "Marcus Leys"
+    uid: 2001
+    state: present
+    ssh_public_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDASRvsKLp1NU8J+EV00DEDyArD8Uv6cxRdqIw5ez0k2HWWgpmG12+H2q8xEO7fnbrmWtpSC9nSmVlozlPpXp/LH5YQQykJzuerNrNFS4nxYu4I1iDaQw/MaiktGpGhTAzxoi0BxLE35gKxpe4inTjiJJ+Xtc3U4ijIinT03oI6E3CcU6R24etWX1ywuZSUindpVwzdbH5Lcy4CzWg8txSmIbNp4320MYGaRpOUZuCf3Qgw+XX89p6t5Ub1atsNkYYqJofiRlAHK/6XqF94g964N2AqyfgbKMbNu/2oYAQS9ISeYA3fW47bukOm/LkienVG8DaR1YsCsJufZeQuuzvY3VIpz0SwySI3dEpZKojFVETQmzFzN+ODd2OiF0tDqZN3Y7ac9AgvGk4WJCD7xzGXf7VPNgDFYmbK/AHjWOFQoXK2sFHEM3OtizjvnCOaAWu3D1PWQQGGnNI75kouZ1KrapLFVZoL728GvAoGR2EHODDOii+9hEjRR3xqQfp2Izlp7phSmiJkbnujnyafGtNZunIJHlhYGr4n720z2zsZ4j2V6GU/w1g7LN1LhGuiOs2HgvUt3/iUj/f9ssJzVQaqAcmokHNusOjBjGd0kjsTZlqYCtuSL0W0JwM5VFeIeDK+0dboGPa45yl9fLTNGt24w1pnFgXEzg53294S7k78ew== Marcus Leys <axi.a_mley>"
+    temp_password_plain: "CHANGE-ME-at-logon-MARCUS"
+
+  - username: "axi.a_kwlm"
+    full_name: "Kris Welleman"
+    uid: 2002
+    state: present
+    ssh_public_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCfkknMwwot1hxgPUv+mhuDBhBqZQuDxHZDPcuiRSLFGEppb80vON2/1RD/LJ22wocJ5Ojwt51UnCqvL9J6twPRQ9D7WJpYVupvDjyKpYoyzZ9vMRSIiLaQQ8lz/yzAR6CJ1bV/vVdN81e6ntIxE3XWIsr3p9B4SQaoGW33gIz8PLHq1uA71L79mycPGzpiuivDp9yUHxYJgEm9OSARb+oXdP8q0BwY6bYv3oNRNo4tuhkEiI28yaetw8vCKxYGE12kctuWARJxxshT9YItCDT8bmsZqsWSi5Z9bXzHK/9ge0+h3EQeF+rfI1JwuwnicQI0nWmLijROKvhP8fgzpefXTiXUJ8zhKazwGusBBFH/62SglAuci/W47ffBzdWkBUOFblHmPgGp+jHGS6kXKM0vE1aMD+GX0a+PhBJk7Szk01GIoKNHkzDpg+Fh0RVSbbE3lKYwJ2ib/hB3KURZ2DatNBVWEXOe6qYFsVMyzk/Xjm/7TlgV7vv55ar0uCVLiaOeDBxK89+//hQhXJJYHrlIo6LC5rS12TLI1C9TOzRYxN8ifUajqE82Ngt4U4GCAHWn+TNvAHP/s98eV6PfegdTLnJ/O5nATQBkj4Nm3r70vaK4IMFpmN0enKTsrZ/wbx+U9oq2Zl7qbGyeBG3wXpU63WAAgO0R9K/lvpiqmYJhw== Kris Welleman <axi.a_kwlm>"
+    temp_password_plain: "Kris-CHANGE-ME-at-logon"
+
+  - username: "axi.a_bvrc"
+    full_name: "Bert Vercauteren"
+    uid: 2003
+    state: present
+    ssh_public_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCr/sN+q2GGeA1W9qbc+W1WImhe4Et+2ZMKgB0gxCe3bQ+fCy7jWGhV+UppE0Kno6YSwN5H/K1LDwd3WXl1ork+4Uvp9pDZ/UcmtTBpLuu3m5hx6Khupvn/wdRFRMcX/nT8iAdUw9SkNKZ+l2xx7S+JS50VeZ6L6n2iIRglN0TjwuStX0cwFma5P/RkN2bHovj7GvHZmXYReGNwsmMb8Rn86zebtbeBpUJXCQ9gFOHYHGFz/PZswrF3+vfTvsN1sddurQu2AC4pLwAbDImUkp4mLjUfMICTykysCoJHuvhF8O7XpVEiLt8GdAo3ghFC96IYkUoBZsYxEXS9z2h+retyCvosZI6KUKVCt6kyvtGRCDVGB1B8dXRMYvWwNY0mlLrZreJoyNPmbvCE8qLeQT8ZP4EaCL+vX47ombGpHTE5qrvXEwa15rVyYzeyjYSCzHpbzfpNt84u0Xic4XZb7fILJVequRApdsOPzXNB8t7dZAmZvV2qCYUoky4rnRbpMW+QKElzAoKDD6m9APzFHGg8cyPV5ijjIynN9AcvcP5bqLUuBEvWLBCQW8Aq6NF+QlqC8jrqw1Y8Se6UZzAgrxdymXGTxfe2vFXyfC4MU9malk6Psb7jz4G9UJp4oZ1Z3cO5dnVsSo0EJjghbTdztNyyDaOQDFmPm+WEqtZStaMSCw== Bert Vercauteren <axi.a_bvrc>"
+    temp_password_plain: "Must-CHANGE-ME-at-logon"
+  
+  - username: "axi.a_scne"
+    full_name: "Stef Coene"
+    uid: 2004
+    state: present
+    ssh_public_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCr/sN+q2GGeA1W9qbc+W1WImhe4Et+2ZMKgB0gxCe3bQ+fCy7jWGhV+UppE0Kno6YSwN5H/K1LDwd3WXl1ork+4Uvp9pDZ/UcmtTBpLuu3m5hx6Khupvn/wdRFRMcX/nT8iAdUw9SkNKZ+l2xx7S+JS50VeZ6L6n2iIRglN0TjwuStX0cwFma5P/RkN2bHovj7GvHZmXYReGNwsmMb8Rn86zebtbeBpUJXCQ9gFOHYHGFz/PZswrF3+vfTvsN1sddurQu2AC4pLwAbDImUkp4mLjUfMICTykysCoJHuvhF8O7XpVEiLt8GdAo3ghFC96IYkUoBZsYxEXS9z2h+retyCvosZI6KUKVCt6kyvtGRCDVGB1B8dXRMYvWwNY0mlLrZreJoyNPmbvCE8qLeQT8ZP4EaCL+vX47ombGpHTE5qrvXEwa15rVyYzeyjYSCzHpbzfpNt84u0Xic4XZb7fILJVequRApdsOPzXNB8t7dZAmZvV2qCYUoky4rnRbpMW+QKElzAoKDD6m9APzFHGg8cyPV5ijjIynN9AcvcP5bqLUuBEvWLBCQW8Aq6NF+QlqC8jrqw1Y8Se6UZzAgrxdymXGTxfe2vFXyfC4MU9malk6Psb7jz4G9UJp4oZ1Z3cO5dnVsSo0EJjghbTdztNyyDaOQDFmPm+WEqtZStaMSCw== Bert Vercauteren <axi.a_bvrc>"
+    temp_password_plain: "CH4nG3-M3-4t-logoN"

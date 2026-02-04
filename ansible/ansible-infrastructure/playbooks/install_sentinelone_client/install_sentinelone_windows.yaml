@@ -1,0 +1,23 @@
+---
+- name: Install SentinelOne on Windows servers
+  hosts: all
+  vars:
+
+  tasks:
+  - name: Create temp directory if not existing
+    ansible.windows.win_file:
+      path: C:\temp\
+      state: directory
+
+  - name: Copy installer to the remote server
+    ansible.builtin.copy:
+      src: ./SentinelOneInstaller_windows_64bit_v24_1_5_277.exe
+      dest: C:\temp\
+
+  - name: Install SentinelOne agent
+    ansible.windows.win_command:
+      argv:
+        - "C:\\temp\\SentinelOneInstaller_windows_64bit_v24_1_5_277.exe"
+        - -t {{ S1_Token }}
+        - -q
+

@@ -1,0 +1,37 @@
+- name: Build TLS Trust Census
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    report_file: "/tmp/tls_trust_report.csv"
+
+  tasks:
+
+    - name: Create CSV header
+      copy:
+        dest: "{{ report_file }}"
+        content: "Server,State\n"
+
+    - name: Register expected hosts
+      set_fact:
+        all_hosts: "{{ groups['linux'] }}"
+
+    - name: Find reported state files
+      find:
+        paths: /tmp
+        patterns: "tls_*.state"
+      register: found_states
+
+    - name: Build state lookup dictionary
+      set_fact:
+        state_map: "{{ state_map | default({}) | combine({ item.path | regex_replace('^.*/tls_(.*)\\.state$', '\\1'): lookup('file', item.path) | trim }) }}"
+      loop: "{{ found_states.files }}"
+
+    - name: Write census
+      lineinfile:
+        path: "{{ report_file }}"
+        insertafter: EOF
+        create: true
+        line: "{{ item }},{{ state_map[item] | default('Unreachable') }}"
+      loop: "{{ all_hosts }}"
+

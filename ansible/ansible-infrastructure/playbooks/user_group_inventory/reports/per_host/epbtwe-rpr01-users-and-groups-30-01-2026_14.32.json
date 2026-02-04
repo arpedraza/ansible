@@ -1,0 +1,548 @@
+{
+    "distribution": "RedHat",
+    "distribution_version": "7.9",
+    "host": "epbtwe-rpr01",
+    "os_family": "RedHat",
+    "sudo_groups": [
+        "wheel",
+        "sudo",
+        "admin",
+        "root"
+    ],
+    "sudo_users_from_sudoers": [],
+    "timestamp": "30-01-2026_14.32",
+    "users": {
+        "abrt": {
+            "gecos": "",
+            "gid": "173",
+            "groups": [],
+            "home": "/etc/abrt",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "173"
+        },
+        "adm": {
+            "gecos": "adm",
+            "gid": "4",
+            "groups": [
+                "admin"
+            ],
+            "home": "/var/adm",
+            "is_sudoer": true,
+            "shell": "/sbin/nologin",
+            "uid": "3"
+        },
+        "adm_andy": {
+            "gecos": "Andy Pedraza",
+            "gid": "7001",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/adm_andy",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "7001"
+        },
+        "ansible": {
+            "gecos": "",
+            "gid": "1005",
+            "groups": [
+                "wheel"
+            ],
+            "home": "/home/ansible",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1004"
+        },
+        "apache": {
+            "gecos": "Apache",
+            "gid": "48",
+            "groups": [],
+            "home": "/usr/share/httpd",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "48"
+        },
+        "avahi": {
+            "gecos": "Avahi mDNS/DNS-SD Stack",
+            "gid": "70",
+            "groups": [],
+            "home": "/var/run/avahi-daemon",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "70"
+        },
+        "axi.a_kwlm": {
+            "gecos": "Kris Welleman",
+            "gid": "2002",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/axi.a_kwlm",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "2002"
+        },
+        "axi.a_mley": {
+            "gecos": "Marcus Leys",
+            "gid": "2001",
+            "groups": [
+                "admin"
+            ],
+            "home": "/home/axi.a_mley",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "2001"
+        },
+        "bin": {
+            "gecos": "bin",
+            "gid": "1",
+            "groups": [],
+            "home": "/bin",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "1"
+        },
+        "chrony": {
+            "gecos": "",
+            "gid": "995",
+            "groups": [],
+            "home": "/var/lib/chrony",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "997"
+        },
+        "colord": {
+            "gecos": "User for colord",
+            "gid": "987",
+            "groups": [],
+            "home": "/var/lib/colord",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "991"
+        },
+        "daemon": {
+            "gecos": "daemon",
+            "gid": "2",
+            "groups": [],
+            "home": "/sbin",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "2"
+        },
+        "dbus": {
+            "gecos": "System message bus",
+            "gid": "81",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "81"
+        },
+        "dcscomms": {
+            "gecos": "",
+            "gid": "1001",
+            "groups": [],
+            "home": "/home/tstdba",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "1001"
+        },
+        "ftp": {
+            "gecos": "FTP User",
+            "gid": "50",
+            "groups": [],
+            "home": "/var/ftp",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "14"
+        },
+        "games": {
+            "gecos": "games",
+            "gid": "100",
+            "groups": [],
+            "home": "/usr/games",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "12"
+        },
+        "gdm": {
+            "gecos": "",
+            "gid": "42",
+            "groups": [],
+            "home": "/var/lib/gdm",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "42"
+        },
+        "geoclue": {
+            "gecos": "User for geoclue",
+            "gid": "989",
+            "groups": [],
+            "home": "/var/lib/geoclue",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "993"
+        },
+        "gluster": {
+            "gecos": "GlusterFS daemons",
+            "gid": "980",
+            "groups": [],
+            "home": "/run/gluster",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "988"
+        },
+        "gnome-initial-setup": {
+            "gecos": "",
+            "gid": "977",
+            "groups": [],
+            "home": "/run/gnome-initial-setup/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "985"
+        },
+        "halt": {
+            "gecos": "halt",
+            "gid": "0",
+            "groups": [],
+            "home": "/sbin",
+            "is_sudoer": false,
+            "shell": "/sbin/halt",
+            "uid": "7"
+        },
+        "lansweeper": {
+            "gecos": "",
+            "gid": "1004",
+            "groups": [
+                "wheel"
+            ],
+            "home": "/home/lansweeper",
+            "is_sudoer": true,
+            "shell": "/bin/bash",
+            "uid": "1003"
+        },
+        "libstoragemgmt": {
+            "gecos": "daemon account for libstoragemgmt",
+            "gid": "996",
+            "groups": [],
+            "home": "/var/run/lsm",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "998"
+        },
+        "lp": {
+            "gecos": "lp",
+            "gid": "7",
+            "groups": [],
+            "home": "/var/spool/lpd",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "4"
+        },
+        "mail": {
+            "gecos": "mail",
+            "gid": "12",
+            "groups": [],
+            "home": "/var/spool/mail",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "8"
+        },
+        "nfsnobody": {
+            "gecos": "Anonymous NFS User",
+            "gid": "65534",
+            "groups": [],
+            "home": "/var/lib/nfs",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "65534"
+        },
+        "nobody": {
+            "gecos": "Nobody",
+            "gid": "99",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "99"
+        },
+        "ntp": {
+            "gecos": "",
+            "gid": "38",
+            "groups": [],
+            "home": "/etc/ntp",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "38"
+        },
+        "nxautomation": {
+            "gecos": "nxOMSAutomation",
+            "gid": "973",
+            "groups": [
+                "omiusers",
+                "omsagent"
+            ],
+            "home": "/home/nxautomation/run",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "982"
+        },
+        "omi": {
+            "gecos": "",
+            "gid": "975",
+            "groups": [],
+            "home": "/home/omi",
+            "is_sudoer": false,
+            "shell": "/bin/false",
+            "uid": "984"
+        },
+        "omsagent": {
+            "gecos": "OMS agent",
+            "gid": "976",
+            "groups": [],
+            "home": "/var/opt/microsoft/omsagent/run",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "983"
+        },
+        "operator": {
+            "gecos": "operator",
+            "gid": "0",
+            "groups": [],
+            "home": "/root",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "11"
+        },
+        "pcp": {
+            "gecos": "Performance Co-Pilot",
+            "gid": "988",
+            "groups": [],
+            "home": "/var/lib/pcp",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "992"
+        },
+        "polkitd": {
+            "gecos": "User for polkitd",
+            "gid": "998",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "999"
+        },
+        "postfix": {
+            "gecos": "",
+            "gid": "89",
+            "groups": [
+                "mail"
+            ],
+            "home": "/var/spool/postfix",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "89"
+        },
+        "pulse": {
+            "gecos": "PulseAudio System Daemon",
+            "gid": "171",
+            "groups": [],
+            "home": "/var/run/pulse",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "171"
+        },
+        "qemu": {
+            "gecos": "qemu user",
+            "gid": "107",
+            "groups": [
+                "kvm"
+            ],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "107"
+        },
+        "radvd": {
+            "gecos": "radvd user",
+            "gid": "75",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "75"
+        },
+        "root": {
+            "gecos": "root",
+            "gid": "0",
+            "groups": [],
+            "home": "/root",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "0"
+        },
+        "rpc": {
+            "gecos": "Rpcbind Daemon",
+            "gid": "32",
+            "groups": [],
+            "home": "/var/lib/rpcbind",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "32"
+        },
+        "rpcuser": {
+            "gecos": "RPC Service User",
+            "gid": "29",
+            "groups": [],
+            "home": "/var/lib/nfs",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "29"
+        },
+        "rtkit": {
+            "gecos": "RealtimeKit",
+            "gid": "172",
+            "groups": [],
+            "home": "/proc",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "172"
+        },
+        "saned": {
+            "gecos": "SANE scanner daemon user",
+            "gid": "986",
+            "groups": [],
+            "home": "/usr/share/sane",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "990"
+        },
+        "saslauth": {
+            "gecos": "Saslauthd user",
+            "gid": "76",
+            "groups": [],
+            "home": "/run/saslauthd",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "987"
+        },
+        "sentinelone": {
+            "gecos": "",
+            "gid": "1006",
+            "groups": [],
+            "home": "/opt/sentinelone/home",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "981"
+        },
+        "setroubleshoot": {
+            "gecos": "",
+            "gid": "979",
+            "groups": [],
+            "home": "/var/lib/setroubleshoot",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "986"
+        },
+        "shutdown": {
+            "gecos": "shutdown",
+            "gid": "0",
+            "groups": [],
+            "home": "/sbin",
+            "is_sudoer": false,
+            "shell": "/sbin/shutdown",
+            "uid": "6"
+        },
+        "socius24": {
+            "gecos": "",
+            "gid": "1000",
+            "groups": [],
+            "home": "/home/socius24",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1000"
+        },
+        "sshd": {
+            "gecos": "Privilege-separated SSH",
+            "gid": "74",
+            "groups": [],
+            "home": "/var/empty/sshd",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "74"
+        },
+        "svc_rapid7": {
+            "gecos": "",
+            "gid": "1003",
+            "groups": [],
+            "home": "/home/svc_rapid7",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1002"
+        },
+        "sync": {
+            "gecos": "sync",
+            "gid": "0",
+            "groups": [],
+            "home": "/sbin",
+            "is_sudoer": false,
+            "shell": "/bin/sync",
+            "uid": "5"
+        },
+        "systemd-network": {
+            "gecos": "systemd Network Management",
+            "gid": "192",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "192"
+        },
+        "tcpdump": {
+            "gecos": "",
+            "gid": "72",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "72"
+        },
+        "tss": {
+            "gecos": "Account used by the trousers package to sandbox the tcsd daemon",
+            "gid": "59",
+            "groups": [],
+            "home": "/dev/null",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "59"
+        },
+        "tstdba": {
+            "gecos": "",
+            "gid": "1001",
+            "groups": [],
+            "home": "/home/tstdba",
+            "is_sudoer": false,
+            "shell": "/bin/bash",
+            "uid": "1001"
+        },
+        "unbound": {
+            "gecos": "Unbound DNS resolver",
+            "gid": "981",
+            "groups": [],
+            "home": "/etc/unbound",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "989"
+        },
+        "usbmuxd": {
+            "gecos": "usbmuxd user",
+            "gid": "113",
+            "groups": [],
+            "home": "/",
+            "is_sudoer": false,
+            "shell": "/sbin/nologin",
+            "uid": "113"
+        }
+    }
+}

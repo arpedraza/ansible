@@ -1,0 +1,24 @@
+---
+- name: Check SentinelAgent service status
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Query SentinelAgent service
+      ansible.windows.win_service_info:
+        name: SentinelAgent
+      register: sentinel_service
+      failed_when: false
+
+    - name: Report SentinelAgent status
+      ansible.builtin.debug:
+        msg: >-
+          SentinelAgent is
+          {% if sentinel_service.services | length == 0 %}
+            NOT INSTALLED
+          {% elif sentinel_service.services[0].state == 'running' %}
+            RUNNING
+          {% else %}
+            INSTALLED but {{ sentinel_service.services[0].state | upper }}
+          {% endif %}
+

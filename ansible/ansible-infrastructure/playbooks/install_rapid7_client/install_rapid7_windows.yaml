@@ -1,0 +1,23 @@
+---
+- name: Install Rapid7 on Windows servers
+  hosts: all
+  vars:
+
+  tasks:
+  - name: Create temp directory if not existing
+    ansible.windows.win_file:
+      path: C:\temp\
+      state: directory
+
+  - name: Copy installer to the remote server
+    ansible.builtin.copy:
+      src: ./agentInstaller-x86_64.msi
+      dest: C:\temp\
+
+  - name: Install Rapid7 agent
+    ansible.windows.win_package:
+      path: "C:\\temp\\agentInstaller-x86_64.msi"
+      state: present
+      arguments:
+        - CUSTOMTOKEN={{ token }}
+

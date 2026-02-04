@@ -1,0 +1,300 @@
+---
+# Role: linux_admins
+# Lifecycle states supported:
+#   present  : user enabled, in admin group, keys present
+#   revoked  : user cannot login (no keys, locked password, expired, nologin), removed from admin group
+#   offboard : revoked + archive & remove live home dir (archive kept)
+#   decom    : revoked + archive home if needed + delete user account (archive kept)
+#
+# Notes:
+# - `state` is the source of truth.
+# - Archive is idempotent: if an archive already exists for the user, we do NOT create another one.
+# - Optional per-user overrides (if you ever want them) are supported:
+#     archive_home: true|false   (default true for offboard/decom)
+#     remove_home : true|false   (default true for offboard; for decom handled by user module remove=)
+
+# BASELINE: group + sudoers
+- name: Ensure admin group exists
+  ansible.builtin.group:
+    name: "{{ linux_admin_group }}"
+    state: present
+  tags: ['users']
+
+- name: Install sudoers policy (password required)
+  ansible.builtin.template:
+    src: sudoers_admins.j2
+    dest: "/etc/sudoers.d/{{ linux_admin_group }}"
+    owner: root
+    group: root
+    mode: "0440"
+  tags: ['sudo']
+
+# PRESENT
+- name: Create admin users (present) + set temp password hash (only on create)
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    comment: "{{ item.full_name | default(item.username) }}"
+    uid: "{{ item.uid | default(omit) }}"
+    groups: "{{ linux_admin_group }}"
+    append: true
+    shell: /bin/bash
+    create_home: true
+    password: "{{ item.temp_password_plain | password_hash('sha512') }}"
+    update_password: on_create
+    state: present
+  loop: "{{ linux_admins }}"
+  when: (item.state | default('present')) == 'present'
+  register: linux_admin_user_results
+  no_log: true
+  tags: ['users']
+
+- name: Force password change at first login (chage -d 0) - only on create
+  ansible.builtin.command: "chage -d 0 {{ item.item.username }}"
+  loop: "{{ linux_admin_user_results.results | default([]) }}"
+  when:
+    - item.changed | bool
+    - (item.item.state | default('present')) == 'present'
+  changed_when: false
+  failed_when: false
+  tags: ['users']
+
+- name: Add SSH public keys for present users
+  ansible.builtin.authorized_key:
+    user: "{{ item.0.username }}"
+    key: "{{ item.1 }}"
+    state: present
+    manage_dir: true
+  loop: "{{ linux_admins | subelements('ssh_public_keys', skip_missing=True) }}"
+  when:
+    - (item.0.state | default('present')) == 'present'
+    - not ansible_check_mode
+  tags: ['ssh']
+
+# OPTIONAL SSH HARDENING
+- name: Disable SSH password authentication (key-only)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication\s+'
+    line: 'PasswordAuthentication no'
+  when: harden_sshd_disable_password_login | bool
+  notify: restart ssh
+  tags: ['sshd']
+
+- name: Ensure PubkeyAuthentication enabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PubkeyAuthentication\s+'
+    line: 'PubkeyAuthentication yes'
+  when: harden_sshd_disable_password_login | bool
+  notify: restart ssh
+  tags: ['sshd']
+
+- name: Disallow root SSH login (recommended)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin\s+'
+    line: 'PermitRootLogin no'
+  when: harden_sshd_disable_password_login | bool
+  notify: restart ssh
+  tags: ['sshd']
+
+# REVOKE/OFFBOARD/DECOM: compute who exists
+- name: Check if users exist on target (for revoke/offboard/decom operations)
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ item.username }}"
+  loop: "{{ linux_admins }}"
+  when: (item.state | default('present')) in ['revoked', 'offboard', 'decom']
+  register: linux_admin_getent
+  failed_when: false
+  changed_when: false
+  tags: ['offboard', 'decom']
+
+# REVOKE
+- name: Remove SSH keys for revoked/offboard/decom users (only if user exists)
+  ansible.builtin.authorized_key:
+    user: "{{ item.0.username }}"
+    key: "{{ item.1 }}"
+    state: absent
+  loop: "{{ linux_admins | subelements('ssh_public_keys', skip_missing=True) }}"
+  when:
+    - (item.0.state | default('present')) in ['revoked', 'offboard', 'decom']
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.0.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+    - not ansible_check_mode
+  failed_when: false
+  tags: ['offboard', 'decom']
+
+# IMPORTANT: actually remove from admin group (without touching other groups)
+- name: Remove users from admin group when revoked/offboard/decom (only if user exists)
+  ansible.builtin.command: "gpasswd -d {{ item.username }} {{ linux_admin_group }}"
+  loop: "{{ linux_admins }}"
+  when:
+    - (item.state | default('present')) in ['revoked', 'offboard', 'decom']
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  changed_when: true
+  failed_when: false
+  tags: ['offboard', 'decom']
+
+- name: Disable accounts completely (revoked/offboard/decom) (only if user exists)
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    password_lock: true
+    shell: "{{ linux_nologin_shell | default('/sbin/nologin') }}"
+    expires: 1
+    state: present
+  loop: "{{ linux_admins }}"
+  when:
+    - (item.state | default('present')) in ['revoked', 'offboard', 'decom']
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  tags: ['offboard', 'decom']
+
+- name: Force lock at passwd level (usermod -L) (revoked/offboard/decom) (only if user exists)
+  ansible.builtin.command: "usermod -L {{ item.username }}"
+  loop: "{{ linux_admins }}"
+  when:
+    - (item.state | default('present')) in ['revoked', 'offboard', 'decom']
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  changed_when: false
+  failed_when: false
+  tags: ['offboard', 'decom']
+
+# OFFBOARD + DECOM: archive directory
+- name: Ensure offboard archive directory exists
+  ansible.builtin.file:
+    path: "{{ offboard_archive_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+  become: true
+  tags: ['offboard', 'decom']
+
+# OFFBOARD: stat home
+- name: Stat user home (offboard)
+  ansible.builtin.stat:
+    path: "/home/{{ item.username }}"
+  register: offboard_home_stat
+  loop: "{{ linux_admins }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when:
+    - (item.state | default('present')) == 'offboard'
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  become: true
+  tags: ['offboard']
+
+# OFFBOARD: find existing archives (prevents duplicates)
+- name: Find existing archives for offboard users
+  ansible.builtin.find:
+    paths: "{{ offboard_archive_path }}"
+    patterns: "{{ item.username }}-*.tar.gz"
+    file_type: file
+    recurse: false
+  register: offboard_existing_archives
+  loop: "{{ linux_admins }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when: (item.state | default('present')) == 'offboard'
+  become: true
+  tags: ['offboard']
+
+- name: Archive home directory (offboard) - only if no previous archive exists
+  ansible.builtin.archive:
+    path: "/home/{{ item.item.username }}"
+    dest: "{{ offboard_archive_path }}/{{ item.item.username }}-{{ ansible_date_time.iso8601_basic_short }}.tar.gz"
+    format: gz
+  loop: "{{ offboard_home_stat.results | default([]) | selectattr('stat', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.item.username }}"
+  vars:
+    _archive_home: "{{ item.item.archive_home | default(true) | bool }}"
+    _already_archived: >-
+      {{
+        (offboard_existing_archives.results | default([])
+          | selectattr('item.username','equalto', item.item.username)
+          | map(attribute='matched') | list | first | default(0) | int) > 0
+      }}
+  when:
+    - item.stat.exists | bool
+    - _archive_home
+    - not _already_archived
+  become: true
+  tags: ['offboard']
+
+- name: Remove live home directory (offboard)
+  ansible.builtin.file:
+    path: "/home/{{ item.item.username }}"
+    state: absent
+  loop: "{{ offboard_home_stat.results | default([]) | selectattr('stat', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.item.username }}"
+  vars:
+    _remove_home: "{{ item.item.remove_home | default(true) | bool }}"
+  when:
+    - item.stat.exists | bool
+    - _remove_home
+  become: true
+  tags: ['offboard']
+
+# DECOM: stat home
+- name: Stat user home (decom)
+  ansible.builtin.stat:
+    path: "/home/{{ item.username }}"
+  register: decom_home_stat
+  loop: "{{ linux_admins }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when:
+    - (item.state | default('present')) == 'decom'
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  become: true
+  tags: ['decom']
+
+# DECOM: find existing archives (prevents duplicates)
+- name: Find existing archives for decom users
+  ansible.builtin.find:
+    paths: "{{ offboard_archive_path }}"
+    patterns: "{{ item.username }}-*.tar.gz"
+    file_type: file
+    recurse: false
+  register: decom_existing_archives
+  loop: "{{ linux_admins }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when: (item.state | default('present')) == 'decom'
+  become: true
+  tags: ['decom']
+
+- name: Archive home before deletion (decom) - only if no previous archive exists
+  ansible.builtin.archive:
+    path: "/home/{{ item.item.username }}"
+    dest: "{{ offboard_archive_path }}/{{ item.item.username }}-{{ ansible_date_time.iso8601_basic_short }}.tar.gz"
+    format: gz
+  loop: "{{ decom_home_stat.results | default([]) | selectattr('stat', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.item.username }}"
+  vars:
+    _archive_home: "{{ item.item.archive_home | default(true) | bool }}"
+    _already_archived: >-
+      {{
+        (decom_existing_archives.results | default([])
+          | selectattr('item.username','equalto', item.item.username)
+          | map(attribute='matched') | list | first | default(0) | int) > 0
+      }}
+  when:
+    - item.stat.exists | bool
+    - _archive_home
+    - not _already_archived
+  become: true
+  tags: ['decom']
+
+- name: Remove user account (decom) - archive remains
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    state: absent
+    remove: "{{ item.remove_home | default(true) | bool }}"
+  loop: "{{ linux_admins }}"
+  when:
+    - (item.state | default('present')) == 'decom'
+    - (linux_admin_getent.results | default([]) | selectattr('item.username', 'equalto', item.username) | map(attribute='ansible_facts.getent_passwd') | list | length) > 0
+  tags: ['decom']
